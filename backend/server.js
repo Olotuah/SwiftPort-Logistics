@@ -11,10 +11,15 @@ const app = express();
 // Allow requests only from your Vercel URL
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,  // e.g. https://my-swiftport.vercel.app
-    optionsSuccessStatus: 200
+    origin: [
+      "http://localhost:5173",
+      "https://swift-port-logistics.vercel.app"
+    ],
+    optionsSuccessStatus: 200,
+    credentials: true // Optional
   })
 );
+
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 
