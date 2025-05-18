@@ -6,6 +6,7 @@ const API_BASE_URL = import.meta.env.DEV
 
 const http = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true // ✅ Add this only if you're using cookies/sessions
 });
 
 http.interceptors.request.use(config => {
