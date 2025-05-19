@@ -72,7 +72,8 @@ export const getAllPackages = async (req, res) => {
 // Admin: create new shipment
 export const createPackage = async (req, res) => {
   try {
-    const { sender, recipient, weight, service, paid = false, imageUrl } = req.body;
+    const { sender, recipient, weight, service, paid = false } = req.body;
+    const imageUrl = req.file ? req.file.path : '';
     const pkg = new Package({ sender, recipient, weight, service, paid, imageUrl });
     await pkg.save();
 

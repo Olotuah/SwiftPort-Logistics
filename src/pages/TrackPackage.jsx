@@ -109,18 +109,15 @@ const TrackPackage = () => {
             </div>
 
             {result.imageUrl && (
-              <div className="pt-4 text-center">
-                <img
-                  src={
-                    result.imageUrl.startsWith('http')
-                      ? result.imageUrl
-                      : `${http.defaults.baseURL.replace('/api', '')}${result.imageUrl}`
-                  }
-                  alt="Package"
-                  className="w-40 h-40 object-cover mx-auto rounded border"
-                />
-              </div>
-            )}
+  <div className="pt-4 text-center">
+    <img
+      src={result.imageUrl} // ✅ simple and reliable now
+      alt="Package"
+      className="w-40 h-40 object-cover mx-auto rounded border"
+    />
+  </div>
+)}
+
 
             <div className="pt-4 text-center">
               <p className="text-xs text-gray-500 mb-2">Scan QR to share this tracking ID</p>
