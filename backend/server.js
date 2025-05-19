@@ -13,12 +13,14 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://swift-port-logistics.vercel.app"
+      "https://swift-port-logistics.vercel.app",
+      "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app" // ✅ Add this
     ],
-    optionsSuccessStatus: 200,
-    credentials: true // Optional
+    credentials: true,
+    optionsSuccessStatus: 200
   })
 );
+
 
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
