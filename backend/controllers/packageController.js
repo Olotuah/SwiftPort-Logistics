@@ -29,14 +29,20 @@ async function sendSms(to, message) {
 // Public lookup
 export const getPackage = async (req, res) => {
   try {
-    const pkg = await Package.findOne({ trackingId: req.params.trackingId });
+    const tracking = req.params.trackingId.trim();
+
+    // ✅ Case-insensitive match using RegExp
+    const pkg = await Package.findOne({ trackingId: new RegExp(`^${tracking}$`, 'i') });
+
     if (!pkg) return res.status(404).json({ error: 'Package not found' });
+
     res.json(pkg);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching package:', err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Admin: delete a shipment by tracking ID
 export const deletePackage = async (req, res) => {
