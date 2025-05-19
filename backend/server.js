@@ -16,7 +16,7 @@ app.use(
       "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app",
       "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app"
 
-    ]
+    ],
     credentials: true, // ✅ THIS must be set
     optionsSuccessStatus: 200
   })
