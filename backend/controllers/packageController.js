@@ -100,7 +100,11 @@ export const updatePackage = async (req, res) => {
     const { status, paid } = req.body;
     if (status) pkg.status = status;
     if (typeof paid !== 'undefined') pkg.paid = paid === 'true' || paid === true;
-    if (req.file) pkg.imageUrl = `/uploads/${req.file.filename}`;
+
+    if (req.file) {
+      pkg.imageUrl = req.file.path; // ✅ Cloudinary URL
+      console.log('✅ Updated image URL:', req.file.path); // optional log
+    }
 
     await pkg.save();
 
@@ -108,7 +112,6 @@ export const updatePackage = async (req, res) => {
     const trackLink = `${frontUrl}/track?trackingId=${pkg.trackingId}`;
     const updateText = `Update: Your package ${pkg.trackingId} status is now '${pkg.status}'.`;
 
-    // Notify via SMS only
     if (pkg.recipient.phone) await sendSms(pkg.recipient.phone, updateText);
 
     res.json({ message: 'Package updated successfully', pkg });
