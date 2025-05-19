@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import http from '../utils/http'; // ✅ Use your configured Axios instance
 import { Copy } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react'; // ✅ Correct
-
-
+import { QRCodeCanvas } from 'qrcode.react';
 
 const TrackPackage = () => {
   const [trackingId, setTrackingId] = useState('');
@@ -19,16 +17,18 @@ const TrackPackage = () => {
   const handleTrack = async () => {
     setError('');
     setResult(null);
-    if (!trackingId.trim()) {
+
+    const normalizedId = trackingId.trim().toLowerCase();
+    if (!normalizedId) {
       setError('Please enter a valid tracking ID.');
       return;
     }
 
     try {
-      const res = await axios.get(`http://localhost:5000/api/packages/${trackingId}`);
+      const res = await http.get(`/packages/track/${normalizedId}`);
       setResult(res.data);
 
-      const updated = [trackingId, ...recent.filter(id => id !== trackingId)].slice(0, 5);
+      const updated = [normalizedId, ...recent.filter(id => id !== normalizedId)].slice(0, 5);
       setRecent(updated);
       localStorage.setItem('recent-tracks', JSON.stringify(updated));
     } catch (err) {
@@ -114,7 +114,7 @@ const TrackPackage = () => {
                   src={
                     result.imageUrl.startsWith('http')
                       ? result.imageUrl
-                      : `http://localhost:5000${result.imageUrl}`
+                      : `${http.defaults.baseURL.replace('/api', '')}${result.imageUrl}`
                   }
                   alt="Package"
                   className="w-40 h-40 object-cover mx-auto rounded border"
