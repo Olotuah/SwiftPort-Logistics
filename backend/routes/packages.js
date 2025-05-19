@@ -26,8 +26,12 @@ router.put('/:trackingId', authenticate, requireAdmin, upload.single('image'), u
 // Delete a shipment
 router.delete('/:trackingId', authenticate, requireAdmin, deletePackage);
 
+// Public tracking route
+router.get('/track/:trackingId', getPackage);
+
 // ─── Public ────────────────────────────────────────────────────────────────────
 // Fetch a single package by tracking ID
 router.get('/:trackingId', getPackage);
+
 
 export default router;
