@@ -1,5 +1,6 @@
 // backend/routes/packages.js
 import express from 'express';
+import { storage } from '../config/cloudinary.js';
 import multer from 'multer';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import {
@@ -11,7 +12,7 @@ import {
 } from '../controllers/packageController.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage }); // ✅ now uses Cloudinary
 
 // ─── Admin-only ────────────────────────────────────────────────────────────────
 // List all packages
