@@ -14,7 +14,8 @@ app.use(
       "http://localhost:5173",
       "https://swift-port-logistics.vercel.app",
       "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app",
-      "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app"
+      "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app",
+      "https://swift-port-logistics-18a0zlfp2-nelsons-projects-035bbaf1.vercel.app/"
 
     ],
     credentials: true, // ✅ THIS must be set
