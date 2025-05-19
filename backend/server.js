@@ -17,7 +17,8 @@ app.use(
       "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app"
 
     ]
-    // credentials: true, // Optional
+    credentials: true, // ✅ THIS must be set
+    optionsSuccessStatus: 200
   })
 );
 
