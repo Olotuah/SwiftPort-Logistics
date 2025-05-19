@@ -8,24 +8,26 @@ import authRoutes from './routes/auth.js';
 dotenv.config();
 const app = express();
 
-// Allow requests only from your Vercel URL
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
       "https://swift-port-logistics.vercel.app",
-      "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app" // ✅ Add this
-    ],
-    credentials: true,
-    optionsSuccessStatus: 200
+      "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app"
+      "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app"
+
+    ]
+    // credentials: true, // Optional
   })
 );
 
-
-app.use('/uploads', express.static('uploads'));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
-// Auth & package routes
+app.get('/', (req, res) => {
+  res.send('🟢 Swift Port Logistics API is running');
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/packages', packageRoutes);
 
