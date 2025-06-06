@@ -1,192 +1,96 @@
 import React, { useState } from 'react';
 import http from '../utils/http';
+import { Upload } from 'lucide-react';
 
-export default function CreateShipment() {
-  const [form, setForm] = useState({
-    sender: { name: '', phone: '' },
-    recipient: { name: '', phone: '', email: '', address: '' },
+const CreateShipment = () => {
+  const [formData, setFormData] = useState({
+    senderName: '',
+    senderPhone: '',
+    recipientName: '',
+    recipientPhone: '',
+    recipientEmail: '',
+    recipientAddress: '',
     weight: '',
     service: '',
-    paid: false,
-    imageUrl: ''
+    amount: '',
+    currentLocation: '',
+    estimatedDelivery: '',
+    carrier: '',
+    image: null
   });
+  const [message, setMessage] = useState('');
   const [trackingId, setTrackingId] = useState('');
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (name === 'paid') {
-      setForm((f) => ({ ...f, paid: checked }));
-    } else if (name.startsWith('sender.') || name.startsWith('recipient.')) {
-      const [section, field] = name.split('.');
-      setForm((f) => ({
-        ...f,
-        [section]: { ...f[section], [field]: value }
-      }));
-    } else {
-      setForm((f) => ({ ...f, [name]: value }));
-    }
-  };
-
-  const validatePhone = (phone) => {
-    // E.164 format: + and 10 to 15 digits
-    const regex = /^\+\d{10,15}$/;
-    return regex.test(phone);
+    const { name, value, type, files } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'file' ? files[0] : value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    // Validate recipient phone
-    if (!validatePhone(form.recipient.phone)) {
-      setError('Recipient phone must be in E.164 format, e.g. +2349060064490');
-      return;
-    }
-    // Optionally validate sender phone if needed
-    if (form.sender.phone && !validatePhone(form.sender.phone)) {
-      setError('Sender phone must be in E.164 format, e.g. +12345678900');
-      return;
-    }
-
     try {
-      const { data } = await http.post('/packages', form);
-      setTrackingId(data.trackingId);
-      setError('');
+      const payload = new FormData();
+      payload.append('sender[name]', formData.senderName);
+      payload.append('sender[phone]', formData.senderPhone);
+      payload.append('recipient[name]', formData.recipientName);
+      payload.append('recipient[phone]', formData.recipientPhone);
+      payload.append('recipient[email]', formData.recipientEmail);
+      payload.append('recipient[address]', formData.recipientAddress);
+      payload.append('weight', formData.weight);
+      payload.append('service', formData.service);
+      payload.append('amount', formData.amount);
+      payload.append('currentLocation', formData.currentLocation);
+      payload.append('estimatedDelivery', formData.estimatedDelivery);
+      payload.append('carrier', formData.carrier);
+      if (formData.image) payload.append('image', formData.image);
+
+      const res = await http.post('/packages', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      setTrackingId(res.data.trackingId);
+      setMessage('✅ Shipment created successfully.');
     } catch (err) {
-      setError(err.response?.data?.error || 'Server error');
+      setMessage(`❌ Failed to create shipment: ${err.response?.data?.error || err.message}`);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Create Shipment</h2>
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        {/* Sender */}
-        <div>
-          <label className="block">Sender Name</label>
-          <input
-            name="sender.name"
-            value={form.sender.name}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        <div>
-          <label className="block">Sender Phone (E.164)</label>
-          <input
-            name="sender.phone"
-            value={form.sender.phone}
-            onChange={handleChange}
-            placeholder="+12345678900"
-            className="border p-2 w-full"
-          />
-        </div>
-
-        {/* Recipient */}
-        <div>
-          <label className="block">Recipient Name</label>
-          <input
-            name="recipient.name"
-            value={form.recipient.name}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        <div>
-          <label className="block">Recipient Phone (E.164)</label>
-          <input
-            name="recipient.phone"
-            type="tel"
-            value={form.recipient.phone}
-            onChange={handleChange}
-            placeholder="+2349060064490"
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        <div>
-          <label className="block">Recipient Email</label>
-          <input
-            name="recipient.email"
-            type="email"
-            value={form.recipient.email}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block">Recipient Address</label>
-          <input
-            name="recipient.address"
-            value={form.recipient.address}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-
-        {/* Package Details */}
-        <div>
-          <label className="block">Weight (kg)</label>
-          <input
-            name="weight"
-            type="number"
-            value={form.weight}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        <div>
-          <label className="block">Service Type</label>
-          <select
-            name="service"
-            value={form.service}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            required
-          >
-            <option value="">Select...</option>
-            <option value="standard">Standard</option>
-            <option value="express">Express</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            name="paid"
-            type="checkbox"
-            checked={form.paid}
-            onChange={handleChange}
-          />
-          <label>Paid</label>
-        </div>
-        <div>
-          <label className="block">Image URL</label>
-          <input
-            name="imageUrl"
-            value={form.imageUrl}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Create
-        </button>
+    <div className="max-w-2xl mx-auto py-16 px-6">
+      <h1 className="text-2xl font-bold mb-6">Create New Shipment</h1>
+      <form onSubmit={handleSubmit} className="grid gap-4">
+        <input name="senderName" placeholder="Sender Name" value={formData.senderName} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="senderPhone" placeholder="Sender Phone" value={formData.senderPhone} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="recipientName" placeholder="Recipient Name" value={formData.recipientName} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="recipientPhone" placeholder="Recipient Phone" value={formData.recipientPhone} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="recipientEmail" type="email" placeholder="Recipient Email" value={formData.recipientEmail} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="recipientAddress" placeholder="Recipient Address" value={formData.recipientAddress} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="weight" type="number" step="0.1" placeholder="Weight (kg)" value={formData.weight} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="service" placeholder="Service Type" value={formData.service} onChange={handleChange} className="border p-3 rounded" required />
+        <input name="amount" type="number" step="0.01" placeholder="Amount" value={formData.amount} onChange={handleChange} className="border p-3 rounded" />
+        <input name="currentLocation" placeholder="Current Location" value={formData.currentLocation} onChange={handleChange} className="border p-3 rounded" />
+        <input name="estimatedDelivery" type="date" value={formData.estimatedDelivery} onChange={handleChange} className="border p-3 rounded" />
+        <input name="carrier" placeholder="Carrier (optional)" value={formData.carrier} onChange={handleChange} className="border p-3 rounded" />
+        <label className="flex items-center gap-3 text-sm">
+          <Upload size={18} className="text-gray-600" />
+          <input type="file" name="image" accept="image/*" onChange={handleChange} />
+        </label>
+        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded">Create Shipment</button>
       </form>
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+      {message && <p className="mt-4 text-center text-sm text-gray-700">{message}</p>}
+
       {trackingId && (
-        <div className="mt-6 p-4 border rounded bg-green-50">
+        <div className="mt-6 p-4 border rounded bg-green-50 text-center">
           <p>Your new tracking number is:</p>
-          <code className="font-mono">{trackingId}</code>
+          <code className="font-mono text-lg text-green-800">{trackingId}</code>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default CreateShipment;

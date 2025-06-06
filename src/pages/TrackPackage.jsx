@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import http from '../utils/http'; // ✅ Use your configured Axios instance
+import http from '../utils/http';
 import { Copy } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 
@@ -107,17 +107,44 @@ const TrackPackage = () => {
                 {result.paid ? 'Paid ✅' : 'Unpaid ❌'}
               </span>
             </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Amount:</span>
+              <span>${result.amount?.toFixed(2) || 'N/A'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Current Location:</span>
+              <span>{result.currentLocation || 'In transit'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Last Updated:</span>
+              <span>{new Date(result.updatedAt).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Estimated Delivery:</span>
+              <span>{result.estimatedDelivery ? new Date(result.estimatedDelivery).toDateString() : 'Pending'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Carrier:</span>
+              <span>{result.carrier || 'SwiftPort Logistics'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Weight (kg):</span>
+              <span>{result.weight}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Service:</span>
+              <span>{result.service}</span>
+            </div>
 
             {result.imageUrl && (
-  <div className="pt-4 text-center">
-    <img
-      src={result.imageUrl} // ✅ simple and reliable now
-      alt="Package"
-      className="w-40 h-40 object-cover mx-auto rounded border"
-    />
-  </div>
-)}
-
+              <div className="pt-4 text-center">
+                <img
+                  src={result.imageUrl}
+                  alt="Package"
+                  className="w-40 h-40 object-cover mx-auto rounded border"
+                />
+              </div>
+            )}
 
             <div className="pt-4 text-center">
               <p className="text-xs text-gray-500 mb-2">Scan QR to share this tracking ID</p>
@@ -126,6 +153,7 @@ const TrackPackage = () => {
           </div>
         </div>
       )}
+    
     </div>
   );
 };
