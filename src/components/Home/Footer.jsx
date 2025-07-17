@@ -1,17 +1,19 @@
 // src/components/Home/Footer.jsx
-import React from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import React from "react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-100 py-12 mt-16">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-        
         {/* Company Info */}
         <div>
-          <h3 className="text-2xl font-bold text-yellow-400 mb-4">5Star Shipping</h3>
-          <p className="text-sm text-gray-400">
-            Reliable courier and logistics solutions delivering to your door — locally and internationally.
+          <h3 className="text-2xl font-bold font-inter text-yellow-400 mb-4">
+            SwiftPort Logistics
+          </h3>
+          <p className="text-sm text-gray-400 font-manrope">
+            Reliable courier and logistics solutions delivering to your door —
+            locally and internationally.
           </p>
         </div>
 
@@ -19,11 +21,31 @@ const Footer = () => {
         <div>
           <h4 className="text-lg font-semibold mb-3">Quick Links</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="/" className="hover:text-yellow-400">Home</a></li>
-            <li><a href="/track" className="hover:text-yellow-400">Track Package</a></li>
-            <li><a href="/projects" className="hover:text-yellow-400">Projects</a></li>
-            <li><a href="/about" className="hover:text-yellow-400">About Us</a></li>
-            <li><a href="/contact" className="hover:text-yellow-400">Contact</a></li>
+            <li>
+              <a href="/" className="hover:text-yellow-400">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="/track" className="hover:text-yellow-400">
+                Track Package
+              </a>
+            </li>
+            <li>
+              <a href="/projects" className="hover:text-yellow-400">
+                Projects
+              </a>
+            </li>
+            <li>
+              <a href="/about" className="hover:text-yellow-400">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="/contact" className="hover:text-yellow-400">
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -45,7 +67,6 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-
       </div>
 
       {/* Bottom copyright */}
