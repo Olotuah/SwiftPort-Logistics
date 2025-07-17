@@ -116,7 +116,7 @@ const TrackPackage = () => {
           <h2 className="text-xl font-bold text-center mb-4">
             Package Receipt
           </h2>
-          <div className="text-sm font-bold space-y-2">
+          <div className="text-sm font-semibold space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-medium">Tracking ID:</span>
               <div className="flex items-center gap-2">
