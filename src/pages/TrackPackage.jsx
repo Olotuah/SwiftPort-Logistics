@@ -2,24 +2,38 @@ import React, { useState, useEffect } from "react";
 import http from "../utils/http";
 import { Copy } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
+import Spinner from "../components/Spinner"; // ✅ Import Spinner
 
 const TrackPackage = () => {
   const [trackingId, setTrackingId] = useState("");
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [recent, setRecent] = useState([]);
+  const [fromRecentClick, setFromRecentClick] = useState(false);
 
+  // Load recent from local storage
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("recent-tracks")) || [];
     setRecent(stored);
   }, []);
 
+  // Auto-trigger tracking if user clicks recent
+  useEffect(() => {
+    if (fromRecentClick && trackingId) {
+      handleTrack();
+      setFromRecentClick(false);
+    }
+  }, [trackingId]);
+
   const handleTrack = async () => {
     setError("");
     setResult(null);
+    setLoading(true);
 
     const normalizedId = trackingId.trim().toLowerCase();
     if (!normalizedId) {
+      setLoading(false);
       setError("Please enter a valid tracking ID.");
       return;
     }
@@ -28,6 +42,7 @@ const TrackPackage = () => {
       const res = await http.get(`/packages/track/${normalizedId}`);
       setResult(res.data);
 
+      // Save to recent
       const updated = [
         normalizedId,
         ...recent.filter((id) => id !== normalizedId),
@@ -36,6 +51,8 @@ const TrackPackage = () => {
       localStorage.setItem("recent-tracks", JSON.stringify(updated));
     } catch (err) {
       setError("Package not found.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,7 +62,7 @@ const TrackPackage = () => {
 
   const handleRecentClick = (id) => {
     setTrackingId(id);
-    handleTrack();
+    setFromRecentClick(true);
   };
 
   return (
@@ -87,14 +104,19 @@ const TrackPackage = () => {
         </div>
       )}
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {/* 🌀 Show Spinner while loading */}
+      {loading && <Spinner />}
 
-      {result && (
+      {/* ❌ Error if any */}
+      {!loading && error && <p className="text-red-500 text-center">{error}</p>}
+
+      {/* ✅ Result section */}
+      {!loading && result && (
         <div className="bg-white shadow-lg border p-6 rounded mt-8">
           <h2 className="text-xl font-bold text-center mb-4">
             Package Receipt
           </h2>
-          <div className="text-sm space-y-2">
+          <div className="text-sm font-bold space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-medium">Tracking ID:</span>
               <div className="flex items-center gap-2">
@@ -108,6 +130,7 @@ const TrackPackage = () => {
                 </button>
               </div>
             </div>
+
             <div className="flex justify-between">
               <span className="font-medium">Status:</span>
               <span>{result.status}</span>
