@@ -1,3 +1,4 @@
+import "./Chat.css";
 import { useState } from "react";
 import axios from "axios";
 
@@ -34,7 +35,6 @@ export default function ChatWindow({ close }) {
       },
     ]);
 
-    // User has entered a tracking number
     if (waitingForTracking) {
       setWaitingForTracking(false);
       setIsTyping(true);
@@ -96,12 +96,35 @@ export default function ChatWindow({ close }) {
   };
 
   return (
-    <div className="fixed bottom-24 right-6 w-[390px] h-[650px] bg-white rounded-3xl shadow-2xl overflow-hidden border flex flex-col z-50">
+    <div
+      className="
+        chat-window
+        fixed
+        z-50
+        bg-white
+        shadow-2xl
+        border
+        overflow-hidden
+        flex
+        flex-col
 
+        bottom-24
+        right-6
+        w-[390px]
+        h-[650px]
+        rounded-3xl
+
+        max-md:left-3
+        max-md:right-3
+        max-md:bottom-24
+        max-md:w-auto
+        max-md:h-[78vh]
+        max-md:rounded-2xl
+      "
+    >
       <ChatHeader close={close} />
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-5">
-
+      <div className="chat-scroll flex-1 overflow-y-auto bg-gray-50 p-5">
         {messages.map((message, index) => (
           <ChatMessage
             key={index}
@@ -112,11 +135,9 @@ export default function ChatWindow({ close }) {
         {isTyping && <TypingIndicator />}
 
         <QuickReplies sendMessage={sendMessage} />
-
       </div>
 
       <ChatInput sendMessage={sendMessage} />
-
     </div>
   );
 }
