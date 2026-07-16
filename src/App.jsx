@@ -19,6 +19,7 @@ export default function App() {
   return (
     <Router>
       <Navbar />
+
       <Routes>
         {/* Public */}
         <Route path="/" element={<Home />} />
@@ -28,7 +29,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/projects" element={<Projects />} />
 
-        {/* Protected CreateShipment at both /create and /admin/create */}
+        {/* Protected CreateShipment */}
         <Route
           path="/create"
           element={
@@ -37,6 +38,7 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin/create"
           element={
@@ -46,7 +48,7 @@ export default function App() {
           }
         />
 
-        {/* Admin-only Dashboard & Update */}
+        {/* Admin */}
         <Route
           path="/admin"
           element={
@@ -55,6 +57,7 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin/update/:trackingId"
           element={
@@ -68,7 +71,9 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
+      {/* Chatbot */}
       <ChatWidget />
+
     </Router>
   );
 }

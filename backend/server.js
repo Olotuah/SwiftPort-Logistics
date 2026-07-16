@@ -1,5 +1,6 @@
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first');
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -8,6 +9,7 @@ import packageRoutes from './routes/packages.js';
 import authRoutes from './routes/auth.js';
 
 dotenv.config();
+
 const app = express();
 
 app.use(
@@ -15,14 +17,19 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://swift-port-logistics.vercel.app",
-      "https://www.swiftport.org",       
-      "https://swiftport.org",            
+
+      // SwiftPort domains
+      "https://www.swiftport.org",
+      "https://swiftport.org",
+      "https://www.swiftportlogistics.org",
+      "https://swiftportlogistics.org",
+
+      // Vercel previews
       "https://swift-port-logistics-pf2icb83b-nelsons-projects-035bbaf1.vercel.app",
       "https://swift-port-logistics-pfgkab0al-nelsons-projects-035bbaf1.vercel.app",
       "https://swift-port-logistics-18a0zlfp2-nelsons-projects-035bbaf1.vercel.app/"
-
     ],
-    credentials: true, // ✅ THIS must be set
+    credentials: true,
     optionsSuccessStatus: 200
   })
 );
