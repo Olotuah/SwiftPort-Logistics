@@ -16,51 +16,47 @@ import { getBotResponse } from "../../services/chatbot";
 export default function ChatWindow({ close }) {
 
 
-  const [messages, setMessages] = useState([
-    {
-      sender: "bot",
-      text:
-        "👋 Welcome to SwiftPort Logistics.\n\nI'm SwiftBot AI.\n\nHow can I help you today?",
-    },
+  const initialMessage = {
+    sender:"bot",
+    text:
+    "👋 Welcome to SwiftPort Logistics.\n\nI'm SwiftBot AI.\n\nHow can I help you today?"
+  };
+
+
+  const [messages,setMessages] = useState([
+    initialMessage
   ]);
 
 
   const [waitingForTracking,setWaitingForTracking] = useState(false);
 
+
   const [showQuickReplies,setShowQuickReplies] = useState(true);
+
 
   const [isTyping,setIsTyping] = useState(false);
 
 
-  const chatBodyRef = useRef(null);
+  const chatEndRef = useRef(null);
 
 
 
-  // ALWAYS MOVE TO LAST MESSAGE
-
-  const scrollToBottom = () => {
-
-    setTimeout(()=>{
-
-      if(chatBodyRef.current){
-
-        chatBodyRef.current.scrollTop =
-        chatBodyRef.current.scrollHeight;
-
-      }
-
-    },100);
-
-  };
-
-
+  /*
+  Auto scroll only after new message
+  */
 
   useEffect(()=>{
 
-    scrollToBottom();
+    setTimeout(()=>{
 
-  },[messages,isTyping,showQuickReplies]);
+      chatEndRef.current?.scrollIntoView({
+        behavior:"smooth",
+        block:"end"
+      });
 
+    },100);
+
+  },[messages,isTyping]);
 
 
 
@@ -72,26 +68,30 @@ export default function ChatWindow({ close }) {
 
 
 
+    /*
+    Hide quick actions permanently
+    until chatbot reopened
+    */
+
+    setShowQuickReplies(false);
+
+
+
     setMessages(prev=>[
-
       ...prev,
-
       {
         sender:"user",
         text
       }
-
     ]);
 
 
 
-    scrollToBottom();
 
+    /*
+    Tracking process
+    */
 
-
-
-
-    // TRACKING FLOW
 
     if(waitingForTracking){
 
@@ -100,14 +100,12 @@ export default function ChatWindow({ close }) {
 
       setIsTyping(true);
 
-      setShowQuickReplies(false);
-
 
 
       try{
 
 
-        const res = await axios.get(
+        const response = await axios.get(
           `${API}/api/packages/track/${text}`
         );
 
@@ -117,26 +115,16 @@ export default function ChatWindow({ close }) {
 
 
           setMessages(prev=>[
-
             ...prev,
-
             {
-
               sender:"bot",
-
               type:"shipment",
-
-              data:res.data
-
+              data:response.data
             }
-
           ]);
 
 
-
           setIsTyping(false);
-
-          setShowQuickReplies(true);
 
 
         },1000);
@@ -145,7 +133,6 @@ export default function ChatWindow({ close }) {
 
       }
 
-
       catch(error){
 
 
@@ -153,25 +140,16 @@ export default function ChatWindow({ close }) {
 
 
           setMessages(prev=>[
-
             ...prev,
-
             {
-
               sender:"bot",
-
               text:
               "❌ Sorry, I couldn't find that tracking ID.\n\nPlease check it and try again."
-
             }
-
           ]);
 
 
           setIsTyping(false);
-
-          setShowQuickReplies(true);
-
 
 
         },1000);
@@ -182,16 +160,14 @@ export default function ChatWindow({ close }) {
 
       return;
 
-
     }
 
 
 
 
-
-
-
-    // NORMAL QUESTIONS
+    /*
+    Normal chatbot replies
+    */
 
 
     setIsTyping(true);
@@ -210,25 +186,17 @@ export default function ChatWindow({ close }) {
 
         setWaitingForTracking(true);
 
-        setShowQuickReplies(false);
-
 
       }
 
 
 
       setMessages(prev=>[
-
         ...prev,
-
         {
-
           sender:"bot",
-
           text:reply.text
-
         }
-
       ]);
 
 
@@ -244,6 +212,25 @@ export default function ChatWindow({ close }) {
   };
 
 
+
+
+
+
+  /*
+  When chatbot closes
+  reset quick actions
+  */
+
+  const closeChat = ()=>{
+
+
+    setShowQuickReplies(true);
+
+
+    close();
+
+
+  };
 
 
 
@@ -272,6 +259,7 @@ shadow-2xl
 border
 
 overflow-hidden
+
 flex
 flex-col
 
@@ -284,13 +272,11 @@ max-lg:h-[calc(100vh-110px)]
 >
 
 
-<ChatHeader close={close}/>
+<ChatHeader close={closeChat}/>
 
 
 
 <div
-
-ref={chatBodyRef}
 
 className="
 chat-scroll
@@ -301,6 +287,7 @@ p-5
 "
 
 >
+
 
 
 {
@@ -322,19 +309,26 @@ message={message}
 
 {
 isTyping && <TypingIndicator/>
-
 }
+
 
 
 
 {
-showQuickReplies && (
+showQuickReplies &&
 
-<QuickReplies sendMessage={sendMessage}/>
+<QuickReplies
 
-)
+sendMessage={sendMessage}
+
+/>
 
 }
+
+
+
+
+<div ref={chatEndRef}/>
 
 
 
