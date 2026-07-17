@@ -15,11 +15,11 @@ export default function ChatWidget() {
         className="
           chat-button
           fixed
-          bottom-5
-          right-5
-          max-md:bottom-4
-          max-md:right-4
-          z-50
+          bottom-8
+          right-8
+          max-md:bottom-5
+          max-md:right-5
+          z-[99999]
           w-16
           h-16
           rounded-full

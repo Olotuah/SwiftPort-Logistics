@@ -108,10 +108,10 @@ export default function ChatWindow({ close }) {
         flex
         flex-col
 
-        bottom-24
+        bottom-6
         right-6
         w-[390px]
-        h-[650px]
+        h-[min(720px,82vh)]
         rounded-3xl
 
         max-md:left-3
