@@ -1,40 +1,21 @@
 import express from "express";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const router = express.Router();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.ZOHO_EMAIL,
-    pass: process.env.ZOHO_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 router.post("/", async (req, res) => {
-
   const { name, email, subject, message } = req.body;
 
   try {
 
     // Email to SwiftPort
-
-    await transporter.sendMail({
-
-      from: `"SwiftPort Website" <${process.env.ZOHO_EMAIL}>`,
-
-      to: process.env.ZOHO_EMAIL,
-
+    await resend.emails.send({
+      from: "SwiftPort Logistics <support@swiftportlogistics.org>",
+      to: "support@swiftportlogistics.org",
       subject: `📩 New Contact Form - ${subject}`,
-
       html: `
-
       <div style="font-family:Arial;padding:30px">
 
       <h2 style="color:#0F4C81">
@@ -51,10 +32,8 @@ router.post("/", async (req, res) => {
 
       <p><strong>Message:</strong></p>
 
-      <div style="background:#f4f4f4;padding:20px;border-radius:8px">
-
+      <div style="background:#f5f5f5;padding:20px;border-radius:8px;">
       ${message}
-
       </div>
 
       <br>
@@ -65,60 +44,36 @@ router.post("/", async (req, res) => {
       </small>
 
       </div>
-
       `
     });
 
-    // Auto Reply
-
-    await transporter.sendMail({
-
-      from: `"SwiftPort Logistics" <${process.env.ZOHO_EMAIL}>`,
-
+    // Auto reply
+    await resend.emails.send({
+      from: "SwiftPort Logistics <support@swiftportlogistics.org>",
       to: email,
-
       subject: "We've received your message",
-
       html: `
-
       <div style="font-family:Arial;padding:40px">
-
-      <img
-      src="https://www.swiftportlogistics.org/logo.png"
-      width="150"
-      />
 
       <h2>Hello ${name},</h2>
 
       <p>
-
       Thank you for contacting
       <strong>SwiftPort Logistics.</strong>
-
       </p>
 
       <p>
-
-      We have successfully received your enquiry.
-
-      One of our customer support specialists
-      will respond shortly.
-
+      Your enquiry has been received successfully.
       </p>
 
-      <br>
+      <p>
+      One of our customer support specialists will
+      get back to you shortly.
+      </p>
 
-      <table cellpadding="8">
+      <hr>
 
-      <tr>
-
-      <td><strong>Subject</strong></td>
-
-      <td>${subject}</td>
-
-      </tr>
-
-      </table>
+      <p><strong>Subject:</strong> ${subject}</p>
 
       <br>
 
@@ -126,7 +81,7 @@ router.post("/", async (req, res) => {
 
       Regards,
 
-      <br>
+      <br><br>
 
       <strong>SwiftPort Logistics</strong>
 
@@ -141,35 +96,24 @@ router.post("/", async (req, res) => {
       </p>
 
       </div>
-
       `
-
     });
 
     res.json({
-
       success: true,
-
       message: "Message sent successfully."
-
     });
 
-  }
+  } catch (err) {
 
-  catch (err) {
-
-    console.log(err);
+    console.error(err);
 
     res.status(500).json({
-
       success: false,
-
-      message: "Unable to send message."
-
+      message: err.message
     });
 
   }
-
 });
 
 export default router;

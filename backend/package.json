@@ -26,6 +26,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nanoid": "^5.1.5",
     "nodemailer": "^9.0.3",
+    "resend": "^6.17.2",
     "twilio": "^5.6.1"
   },
   "devDependencies": {
