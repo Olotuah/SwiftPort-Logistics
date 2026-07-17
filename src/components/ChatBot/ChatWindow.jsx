@@ -12,7 +12,9 @@ import TypingIndicator from "./TypingIndicator";
 
 import { getBotResponse } from "../../services/chatbot";
 
+
 export default function ChatWindow({ close }) {
+
 
   const [messages, setMessages] = useState([
     {
@@ -22,198 +24,332 @@ export default function ChatWindow({ close }) {
     },
   ]);
 
-  const [waitingForTracking, setWaitingForTracking] = useState(false);
 
-  const [showQuickReplies, setShowQuickReplies] = useState(true);
+  const [waitingForTracking,setWaitingForTracking] = useState(false);
 
-  const [isTyping, setIsTyping] = useState(false);
+  const [showQuickReplies,setShowQuickReplies] = useState(true);
 
-  const bottomRef = useRef(null);
+  const [isTyping,setIsTyping] = useState(false);
 
-  useEffect(() => {
 
-    bottomRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+  const chatBodyRef = useRef(null);
 
-  }, [messages, isTyping]);
 
-  const sendMessage = async (text) => {
 
-    if (!text.trim()) return;
+  // ALWAYS MOVE TO LAST MESSAGE
 
-    setMessages((prev) => [
+  const scrollToBottom = () => {
+
+    setTimeout(()=>{
+
+      if(chatBodyRef.current){
+
+        chatBodyRef.current.scrollTop =
+        chatBodyRef.current.scrollHeight;
+
+      }
+
+    },100);
+
+  };
+
+
+
+  useEffect(()=>{
+
+    scrollToBottom();
+
+  },[messages,isTyping,showQuickReplies]);
+
+
+
+
+
+  const sendMessage = async(text)=>{
+
+
+    if(!text.trim()) return;
+
+
+
+    setMessages(prev=>[
+
       ...prev,
+
       {
-        sender: "user",
-        text,
-      },
+        sender:"user",
+        text
+      }
+
     ]);
 
-    /**
-     * TRACKING MODE
-     */
 
-    if (waitingForTracking) {
+
+    scrollToBottom();
+
+
+
+
+
+    // TRACKING FLOW
+
+    if(waitingForTracking){
+
 
       setWaitingForTracking(false);
 
       setIsTyping(true);
 
-      try {
+      setShowQuickReplies(false);
+
+
+
+      try{
+
 
         const res = await axios.get(
           `${API}/api/packages/track/${text}`
         );
 
-        setTimeout(() => {
 
-          setMessages((prev) => [
+
+        setTimeout(()=>{
+
+
+          setMessages(prev=>[
 
             ...prev,
 
             {
-              sender: "bot",
-              type: "shipment",
-              data: res.data,
-            },
+
+              sender:"bot",
+
+              type:"shipment",
+
+              data:res.data
+
+            }
 
           ]);
+
+
 
           setIsTyping(false);
 
           setShowQuickReplies(true);
 
-        }, 1200);
+
+        },1000);
+
+
 
       }
 
-      catch (err) {
 
-        setTimeout(() => {
+      catch(error){
 
-          setMessages((prev) => [
+
+        setTimeout(()=>{
+
+
+          setMessages(prev=>[
 
             ...prev,
 
             {
-              sender: "bot",
+
+              sender:"bot",
+
               text:
-                "❌ Sorry, I couldn't find that tracking ID.\n\nPlease check it and try again.",
-            },
+              "❌ Sorry, I couldn't find that tracking ID.\n\nPlease check it and try again."
+
+            }
 
           ]);
+
 
           setIsTyping(false);
 
           setShowQuickReplies(true);
 
-        }, 1200);
+
+
+        },1000);
+
 
       }
+
 
       return;
 
+
     }
 
-    /**
-     * NORMAL CHAT
-     */
+
+
+
+
+
+
+    // NORMAL QUESTIONS
+
 
     setIsTyping(true);
 
-    setTimeout(() => {
+
+
+    setTimeout(()=>{
+
 
       const reply = getBotResponse(text);
 
-      if (reply.type === "tracking") {
+
+
+      if(reply.type==="tracking"){
+
 
         setWaitingForTracking(true);
 
         setShowQuickReplies(false);
 
+
       }
 
-      setMessages((prev) => [
+
+
+      setMessages(prev=>[
 
         ...prev,
 
         {
-          sender: "bot",
-          text: reply.text,
-        },
+
+          sender:"bot",
+
+          text:reply.text
+
+        }
 
       ]);
 
+
+
       setIsTyping(false);
 
-    }, 900);
+
+
+    },900);
+
+
 
   };
 
-  return (
 
-    <div
-      className="
-        chat-window
-        fixed
-        z-[99998]
 
-        right-6
-        bottom-24
 
-        w-[390px]
-        max-w-[calc(100vw-32px)]
 
-        h-[min(700px,calc(100vh-120px))]
 
-        bg-white
-        rounded-3xl
-        shadow-2xl
-        border
-        overflow-hidden
-        flex
-        flex-col
 
-        max-lg:left-4
-        max-lg:right-4
-        max-lg:w-auto
-        max-lg:h-[calc(100vh-110px)]
-      "
-    >
+return (
 
-      <ChatHeader close={close} />
+<div
 
-      <div className="chat-scroll flex-1 overflow-y-auto bg-gray-50 p-5">
+className="
+chat-window
+fixed
+z-[99998]
 
-        {messages.map((message, index) => (
+right-6
+bottom-24
 
-          <ChatMessage
+w-[390px]
+max-w-[calc(100vw-32px)]
 
-            key={index}
+h-[min(700px,calc(100vh-120px))]
 
-            message={message}
+bg-white
+rounded-3xl
+shadow-2xl
+border
 
-          />
+overflow-hidden
+flex
+flex-col
 
-        ))}
+max-lg:left-4
+max-lg:right-4
+max-lg:w-auto
+max-lg:h-[calc(100vh-110px)]
+"
 
-        {isTyping && <TypingIndicator />}
+>
 
-        {showQuickReplies && (
 
-          <QuickReplies sendMessage={sendMessage} />
+<ChatHeader close={close}/>
 
-        )}
 
-        <div ref={bottomRef}></div>
 
-      </div>
+<div
 
-      <ChatInput sendMessage={sendMessage} />
+ref={chatBodyRef}
 
-    </div>
+className="
+chat-scroll
+flex-1
+overflow-y-auto
+bg-gray-50
+p-5
+"
 
-  );
+>
+
+
+{
+messages.map((message,index)=>(
+
+<ChatMessage
+
+key={index}
+
+message={message}
+
+/>
+
+))
+
+}
+
+
+
+{
+isTyping && <TypingIndicator/>
+
+}
+
+
+
+{
+showQuickReplies && (
+
+<QuickReplies sendMessage={sendMessage}/>
+
+)
+
+}
+
+
+
+</div>
+
+
+
+<ChatInput sendMessage={sendMessage}/>
+
+
+
+</div>
+
+
+);
+
 
 }
