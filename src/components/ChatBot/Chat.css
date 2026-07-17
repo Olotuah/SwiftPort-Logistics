@@ -1,77 +1,364 @@
-/* ======================================
-   Chat Window Animation
-====================================== */
+/* ===========================================
+   SwiftPort Premium Chat Theme
+===========================================*/
 
 .chat-window {
-  animation: chatbotOpen 0.3s ease;
-}
-
-@keyframes chatbotOpen {
-  from {
-    opacity: 0;
-    transform: translateY(25px) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* ======================================
-   Floating Button
-====================================== */
-
-.chat-button {
+  animation: chatbotOpen .35s ease;
+  border: 1px solid rgba(255,255,255,.35);
+  backdrop-filter: blur(18px);
+  background: linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f8fbff 100%
+  );
+  overflow: hidden;
   box-shadow:
-    0 18px 45px rgba(37, 99, 235, .45);
+      0 20px 60px rgba(15,76,129,.18),
+      0 8px 25px rgba(0,0,0,.08);
 }
 
-/* ======================================
-   Custom Scrollbar
-====================================== */
+/* =========================================== */
 
-.chat-scroll::-webkit-scrollbar {
-  width: 6px;
+.chat-window::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+right:0;
+
+height:180px;
+
+background:
+
+radial-gradient(circle at top right,#3b82f622,transparent 60%),
+
+radial-gradient(circle at top left,#0ea5e922,transparent 55%),
+
+linear-gradient(135deg,#0F4C81,#2563eb);
+
+opacity:.12;
+
+pointer-events:none;
+
 }
 
-.chat-scroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 50px;
+/* =========================================== */
+
+.chat-button{
+
+background:linear-gradient(135deg,#0F4C81,#2563eb);
+
+box-shadow:
+
+0 18px 40px rgba(37,99,235,.45),
+
+0 8px 18px rgba(0,0,0,.18);
+
+transition:.35s;
+
+position:relative;
+
+overflow:hidden;
+
 }
 
-.chat-scroll::-webkit-scrollbar-track {
-  background: transparent;
+/* =========================================== */
+
+.chat-button::before{
+
+content:"";
+
+position:absolute;
+
+width:180%;
+
+height:180%;
+
+background:
+
+linear-gradient(
+
+120deg,
+
+transparent,
+
+rgba(255,255,255,.35),
+
+transparent
+
+);
+
+transform:rotate(20deg);
+
+left:-150%;
+
+top:-40%;
+
+transition:1s;
+
 }
 
-/* ======================================
-   Mobile Layout
-====================================== */
+/* =========================================== */
 
-@media (max-width:768px) {
+.chat-button:hover{
 
-  .chat-window {
+transform:translateY(-4px) scale(1.08);
 
-    left: 12px !important;
+box-shadow:
 
-    right: 12px !important;
+0 25px 55px rgba(37,99,235,.55);
 
-    width: auto !important;
+}
 
-    height: 78vh !important;
+/* =========================================== */
 
-    bottom: 90px !important;
+.chat-button:hover::before{
 
-    border-radius: 22px !important;
+left:120%;
 
-  }
+}
 
-  .chat-button {
+/* =========================================== */
 
-    right: 16px !important;
+.chat-scroll{
 
-    bottom: 16px !important;
+background:
 
-  }
+linear-gradient(
+
+180deg,
+
+#f8fbff,
+
+#ffffff
+
+);
+
+}
+
+/* =========================================== */
+
+.chat-scroll::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+.chat-scroll::-webkit-scrollbar-thumb{
+
+background:#b8c7da;
+
+border-radius:20px;
+
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover{
+
+background:#8aa4c4;
+
+}
+
+.chat-scroll::-webkit-scrollbar-track{
+
+background:transparent;
+
+}
+
+/* =========================================== */
+
+.chat-card{
+
+background:white;
+
+border-radius:18px;
+
+padding:14px;
+
+box-shadow:
+
+0 6px 18px rgba(0,0,0,.06);
+
+}
+
+/* =========================================== */
+
+.quick-reply{
+
+background:white;
+
+border:1px solid #dbeafe;
+
+color:#0F4C81;
+
+padding:10px 16px;
+
+border-radius:40px;
+
+font-size:14px;
+
+font-weight:600;
+
+transition:.25s;
+
+cursor:pointer;
+
+}
+
+.quick-reply:hover{
+
+background:#2563eb;
+
+color:white;
+
+transform:translateY(-2px);
+
+}
+
+/* =========================================== */
+
+.chat-input{
+
+border-radius:16px;
+
+border:1px solid #d7e6f7;
+
+transition:.3s;
+
+}
+
+.chat-input:focus{
+
+border-color:#2563eb;
+
+box-shadow:
+
+0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+/* =========================================== */
+
+.chat-send{
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#0F4C81,
+
+#2563eb
+
+);
+
+transition:.3s;
+
+}
+
+.chat-send:hover{
+
+transform:scale(1.05);
+
+}
+
+/* =========================================== */
+
+@keyframes chatbotOpen{
+
+from{
+
+opacity:0;
+
+transform:
+
+translateY(35px)
+
+scale(.95);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(0)
+
+scale(1);
+
+}
+
+}
+
+/* =========================================== */
+
+@keyframes floating{
+
+0%{
+
+transform:translateY(0px);
+
+}
+
+50%{
+
+transform:translateY(-6px);
+
+}
+
+100%{
+
+transform:translateY(0px);
+
+}
+
+}
+
+/* =========================================== */
+
+.chat-button{
+
+animation:floating 3.5s ease infinite;
+
+}
+
+/* =========================================== */
+
+@media(max-width:768px){
+
+.chat-window{
+
+left:12px!important;
+
+right:12px!important;
+
+bottom:90px!important;
+
+width:auto!important;
+
+height:80vh!important;
+
+border-radius:24px!important;
+
+}
+
+.chat-button{
+
+right:16px!important;
+
+bottom:16px!important;
+
+width:60px!important;
+
+height:60px!important;
+
+}
 
 }

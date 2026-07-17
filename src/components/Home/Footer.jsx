@@ -12,7 +12,7 @@ const Footer = () => {
             SwiftPort Logistics
           </h3>
           <p className="text-sm text-gray-400 font-manrope">
-            Reliable courier and logistics solutions delivering to your door —
+            Reliable courier and logistics solutions delivering to your door
             locally and internationally.
           </p>
         </div>
@@ -55,12 +55,9 @@ const Footer = () => {
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
-              support@SwiftPort.org
+              support@SwiftPortLogistics.org
             </li>
-            <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              +61 800 555 0199
-            </li>
+          
             <li className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
               Perth, Australia
