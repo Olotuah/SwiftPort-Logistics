@@ -97,33 +97,34 @@ export default function ChatWindow({ close }) {
 
   return (
     <div
-      className="
-fixed
-z-[99998]
+  className="
+    chat-window
+    fixed
+    z-[99998]
 
-right-6
-bottom-28
+    right-6
+    bottom-24
 
-w-[390px]
-h-[650px]
+    w-[390px]
+    max-w-[calc(100vw-32px)]
 
-bg-white
-rounded-3xl
-shadow-2xl
-border
+    h-[min(700px,calc(100vh-120px))]
 
-flex
-flex-col
-overflow-hidden
+    bg-white
+    rounded-3xl
+    shadow-2xl
+    border
+    overflow-hidden
+    flex
+    flex-col
 
-max-lg:right-4
-max-lg:left-4
-max-lg:w-auto
-
-max-lg:h-[78vh]
-max-lg:bottom-24
-"
-    >
+    max-lg:left-4
+    max-lg:right-4
+    max-lg:w-auto
+    max-lg:h-[calc(100vh-110px)]
+    max-lg:bottom-24
+  "
+>
       <ChatHeader close={close} />
 
       <div className="chat-scroll flex-1 overflow-y-auto bg-gray-50 p-5">
