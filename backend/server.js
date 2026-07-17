@@ -1,6 +1,6 @@
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first');
-
+import contactRoutes from "./routes/contact.js";
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/packages', packageRoutes);
+app.use("/api/contact", contactRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
