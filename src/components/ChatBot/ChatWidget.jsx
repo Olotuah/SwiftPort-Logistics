@@ -11,30 +11,36 @@ export default function ChatWidget() {
       {open && <ChatWindow close={() => setOpen(false)} />}
 
       <button
-        onClick={() => setOpen(!open)}
-        className="
-          chat-button
-          fixed
-          bottom-8
-          right-8
-          max-md:bottom-5
-          max-md:right-5
-          z-[99999]
-          w-16
-          h-16
-          rounded-full
-          bg-blue-600
-          hover:bg-blue-700
-          text-white
-          shadow-2xl
-          flex
-          items-center
-          justify-center
-          transition-all
-          duration-300
-          hover:scale-110
-        "
-      >
+  onClick={() => setOpen(!open)}
+  className="
+    fixed
+    z-[99999]
+    bottom-6
+    right-6
+
+    md:bottom-8
+    md:right-8
+
+    w-16
+    h-16
+    rounded-full
+
+    bg-gradient-to-r
+    from-[#0F4C81]
+    to-[#2563EB]
+
+    shadow-2xl
+    hover:scale-110
+    transition-all
+    duration-300
+
+    flex
+    items-center
+    justify-center
+
+    text-white
+  "
+>
         {open ? <X size={30} /> : <MessageCircle size={30} />}
       </button>
     </>
